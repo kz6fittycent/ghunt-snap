@@ -1,0 +1,71 @@
+name: ghunt
+version: 'git'
+summary: OSINT tool to extract information from any Google Account using an email
+description: |
+  GHunt is an OSINT tool to extract information from any Google Account using an email.
+
+  It can currently extract:
+
+    * Owner's name
+    * Last time the profile was edited
+    * Google ID
+    * If the account is a Hangouts Bot
+    * Activated Google services (YouTube, Photos, Maps, News360, Hangouts, etc.)
+    * Possible YouTube channel
+    * Possible other usernames
+    * Public photos (P)
+    * Phones models (P)
+    * Phones firmwares (P)
+    * Installed softwares (P)
+    * Google Maps reviews (M)
+    * Possible physical location (M)
+    * Events from Google Calendar (C)
+    
+  The features marked with a (P) require the target account to have the default 
+  setting of Allow the people you share content with to download your photos and 
+  videos on the Google AlbumArchive, or if the target has ever used Picasa linked 
+  to their Google account.
+  
+  Read more here: https://github.com/mxrch/GHunt
+  
+  Those marked with a (M) require the Google Maps reviews of the target to be public 
+  (they are by default).
+
+  Those marked with a (C) requires user to have Google Calendar set on public 
+  (default it is closed)
+
+license: MPL-2.0
+  
+base: core18
+grade: stable 
+confinement: strict
+  
+apps:
+  ghunt:
+    command: python3 $SNAP/GHunt/hunt.py
+    environment:
+      LC_ALL: C.UTF-8    
+      PYTHONPATH: $SNAP/usr/lib/python3/site-packages    
+    plugs:
+      - network  
+      - home
+      
+parts:
+  ghunt:
+    source: https://github.com/mxrch/GHunt
+    source-type: git
+    plugin: nil
+      
+    override-build: |
+      apt install -yy software-properties-common
+      add-apt-repository ppa:deadsnakes/ppa -yy
+      apt install -yy python3.7
+      
+      git clone https://github.com/mxrch/GHunt
+            
+    build-packages:
+      - python3
+      - git
+      
+    stage-packages:
+      - python3 
